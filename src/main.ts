@@ -1,6 +1,7 @@
 import express from "express";
 import {
   createTodoController,
+  getAllTodoController,
   getTodoController,
 } from "./controllers/todo-controller";
 
@@ -14,7 +15,7 @@ app.get("/get-todo/:todoId", getTodoController);
 app.post("/create-todo", createTodoController);
 app.post("/update-todo/:todoId", createTodoController);
 app.delete("/delete-todo", getTodoController);
-app.post("/get-all-todos", getTodoController);
+app.get("/get-all-todos", getAllTodoController);
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);

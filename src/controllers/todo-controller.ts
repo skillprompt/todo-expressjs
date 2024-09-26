@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { TodoModel } from "../models/todo-model";
+import { getAllTodos } from "../database";
 
 export function getTodoController(
   req: Request,
@@ -61,6 +62,20 @@ function deleteTodoController() {
   //
 }
 
-function getAllTodoController() {
-  //
+export async function getAllTodoController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const result = await getAllTodos();
+
+    res.json({
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong",
+    });
+  }
 }
