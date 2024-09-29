@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { TodoModel } from "../models/todo-model";
-import { getAllTodos, getTodoById } from "../database";
+import { createTodo, getAllTodos, getTodoById } from "../database";
 
 export async function getTodoController(
   req: Request,
@@ -49,28 +49,29 @@ export async function getTodoController(
   }
 }
 
-export function createTodoController(
+export async function createTodoController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  console.log("request", req);
-  const body = req.body;
+  try {
+    const body = req.body;
 
-  console.log("body", body);
+    console.log("body", body);
 
-  const name = body.name;
-  const status = body.status;
+    const name = body.name;
 
-  // !FIXME: write error handling and data validation
+    const result = await createTodo(name);
 
-  const myTodoModel = new TodoModel();
-  const createdTodo = myTodoModel.createTodo(name, status);
+    console.log("result", result);
 
-  res.status(201).json({
-    data: createdTodo,
-    message: "Todo is created successfully!!",
-  });
+    res.status(201).json({
+      message: "todo created successfully",
+    });
+  } catch (error: any) {
+    console.error(error);
+    next(error.message);
+  }
 }
 
 function updateTodoController() {
