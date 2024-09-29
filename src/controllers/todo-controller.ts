@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { TodoModel } from "../models/todo-model";
-import { getAllTodos } from "../database";
+import { getAllTodos, getTodoById } from "../database";
 
-export function getTodoController(
+export async function getTodoController(
   req: Request,
   res: Response,
   next: NextFunction
@@ -14,20 +14,39 @@ export function getTodoController(
     return;
   }
 
-  const myTodoModel = new TodoModel();
+  // const myTodoModel = new TodoModel();
 
-  const todo = myTodoModel.getTodo(parseInt(todoId as string));
+  // const todo = myTodoModel.getTodo(parseInt(todoId as string));
 
-  if (!todo) {
+  // if (!todo) {
+  //   res.status(404).json({
+  //     messagge: "todo not found",
+  //   });
+  //   return;
+  // }
+
+  /**
+   * Get the data from database
+   */
+  const result = (await getTodoById(parseInt(todoId))) as {
+    id: number;
+    name: string;
+    created_at: Date;
+  }[];
+
+  console.log("result", result);
+
+  if (!result.length) {
     res.status(404).json({
-      messagge: "todo not found",
+      message: "todo not found",
+      data: null,
     });
-    return;
+  } else {
+    res.json({
+      message: "get todo by id",
+      data: result[0],
+    });
   }
-
-  res.json({
-    data: todo,
-  });
 }
 
 export function createTodoController(

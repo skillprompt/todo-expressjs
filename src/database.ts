@@ -41,3 +41,11 @@ async function createTodo(name: string) {
   // insert into table sql query run
   // result return
 }
+
+export async function getTodoById(todoId: number) {
+  const conn = await getMysqlConnection();
+
+  const result = await conn.query(`SELECT * FROM todos WHERE id=${todoId}`);
+
+  return result[0];
+}
