@@ -12,12 +12,36 @@ async function getMysqlConnection() {
   return conn;
 }
 
+function createMySQLPool() {
+  const pool = mysql.createPool({
+    host: "localhost",
+    user: "root",
+    database: "todo_db",
+    password: "password",
+    port: 3307,
+    connectionLimit: 10,
+    connectTimeout: 300,
+  });
+
+  return pool;
+}
+
+const myPool = createMySQLPool();
+
 export async function getAllTodos() {
   const conn = await getMysqlConnection();
 
   const result = await conn.query("SELECT * FROM todos");
 
   console.log("getAllTodos Result:", result[0]);
+
+  return result[0];
+}
+
+export async function getAllTodosWithPool() {
+  const result = await myPool.query("SELECT * FROM todos");
+
+  console.log("result with pool", result);
 
   return result[0];
 }

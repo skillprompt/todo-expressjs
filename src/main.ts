@@ -4,12 +4,30 @@ import {
   getAllTodoController,
   getTodoController,
 } from "./controllers/todo-controller";
+import { createDBConnection } from "./mongoose/db";
+import {
+  loginController,
+  signupController,
+} from "./controllers/auth-controller";
 
 const PORT = 4000;
+
+createDBConnection()
+  .then((db) => console.log("connected to db"))
+  .catch((err) => {
+    console.error("failed to connect to db", err);
+  });
 
 const app = express();
 
 app.use(express.json());
+
+// Authentication feature
+// signup flow
+app.post("/auth/signup", signupController);
+
+// login flow
+app.post("/auth/login", loginController);
 
 app.get("/get-todo/:todoId", getTodoController); // done
 app.post("/create-todo", createTodoController); // done

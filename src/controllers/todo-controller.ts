@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { TodoModel } from "../models/todo-model";
 import { createTodo, getAllTodos, getTodoById } from "../database";
+import { createTodoMongoDb } from "../mongoose/query";
 
 export async function getTodoController(
   req: Request,
@@ -60,13 +61,19 @@ export async function createTodoController(
     console.log("body", body);
 
     const name = body.name;
+    const description = body.description;
 
-    const result = await createTodo(name);
+    // mysql database
+    // const result = await createTodo(name);
+
+    // mongodb database
+    const result = await createTodoMongoDb(name, description);
 
     console.log("result", result);
 
     res.status(201).json({
       message: "todo created successfully",
+      todo: result,
     });
   } catch (error: any) {
     console.error(error);
