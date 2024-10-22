@@ -6,6 +6,7 @@ import {
 } from "../mongoose/auth/query";
 import { comparePassword, hashPassword } from "../utils/bcrypt";
 import { generateOTP } from "../utils/otp";
+import { generateToken } from "../utils/jwt";
 
 type TSignupControllerInput = {
   firstName: string;
@@ -114,6 +115,19 @@ export async function loginController(
      * 1. make a token (access token) =>
      * 2. send the token in the cookie
      */
+
+    const token = generateToken({
+      email: userByUserName.email,
+      username: userByUserName.username,
+    });
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+      maxAge: 2 * 60 * 1000,
+      path: "/",
+      sameSite: "lax",
+    });
 
     res.status(200).json({
       message: "you are logged in",

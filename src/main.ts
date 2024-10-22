@@ -1,4 +1,5 @@
 import express, { Request, Response, NextFunction } from "express";
+import cookieParser from "cookie-parser";
 import {
   createTodoController,
   getAllTodoController,
@@ -21,6 +22,7 @@ createDBConnection()
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 
 // Authentication feature
 // signup flow
