@@ -9,7 +9,7 @@ const secretKey = "random_secret";
 
 export function generateToken(payload: TGenerateTokenInput) {
   const token = jwt.sign(payload, secretKey, {
-    expiresIn: 2 * 60,
+    expiresIn: 60 * 60,
   });
   return token;
 }

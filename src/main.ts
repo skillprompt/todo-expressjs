@@ -8,9 +8,11 @@ import {
 import { createDBConnection } from "./mongoose/db";
 import {
   loginController,
+  logoutController,
   meController,
   signupController,
 } from "./controllers/auth-controller";
+import { checkAuth } from "./middlewares/check-auth";
 
 const PORT = 4000;
 
@@ -27,13 +29,16 @@ app.use(cookieParser());
 
 // Authentication feature
 // signup flow
-app.post("/auth/signup", signupController);
+app.post("/auth/signup", checkAuth, signupController);
 
 // login flow
 app.post("/auth/login", loginController);
 
 // me route
-app.get("/auth/me", meController);
+app.get("/auth/me", checkAuth, meController);
+
+// logout route
+app.post("/auth/logout", logoutController);
 
 app.get("/get-todo/:todoId", getTodoController); // done
 app.post("/create-todo", createTodoController); // done

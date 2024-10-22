@@ -144,32 +144,31 @@ export async function meController(
   next: NextFunction
 ) {
   try {
-    const cookie = req.headers["set-cookie"];
+    const loggedInUsername = req.user?.username || "";
 
-    const isCookieObtained =
-      cookie && Array.isArray(cookie) && cookie.length > 0;
-
-    if (!isCookieObtained) {
-      res.status(401).json({
-        message:
-          "You are not logged in. Please login before accessing this route!",
-      });
-      return;
-    }
-
-    const token = cookie[0].split(";")[0].split("=")[1];
-
-    // validate the token obtained from cookie
-    const verifiedTokenOutput = verifyToken(token);
-    if (!verifiedTokenOutput.isValid) {
-      res.status(401).json({
-        message: verifiedTokenOutput.message,
-      });
-      return;
-    }
+    const user = await getUserByUsername(loggedInUsername);
 
     res.status(200).json({
-      data: verifiedTokenOutput.payload,
+      data: user,
+    });
+  } catch (error) {
+    console.error(error);
+    next((error as Error).message);
+  }
+}
+
+export async function logoutController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    res.clearCookie("token");
+
+    // if we had saved the token in database, we need to delete it from there.
+
+    res.status(200).json({
+      data: "You are logged out successfully",
     });
   } catch (error) {
     console.error(error);
