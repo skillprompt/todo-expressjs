@@ -6,7 +6,7 @@ import {
 } from "../mongoose/auth/query";
 import { comparePassword, hashPassword } from "../utils/bcrypt";
 import { generateOTP } from "../utils/otp";
-import { generateToken } from "../utils/jwt";
+import { generateToken, verifyToken } from "../utils/jwt";
 
 type TSignupControllerInput = {
   firstName: string;
@@ -131,6 +131,45 @@ export async function loginController(
 
     res.status(200).json({
       message: "you are logged in",
+    });
+  } catch (error) {
+    console.error(error);
+    next((error as Error).message);
+  }
+}
+
+export async function meController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const cookie = req.headers["set-cookie"];
+
+    const isCookieObtained =
+      cookie && Array.isArray(cookie) && cookie.length > 0;
+
+    if (!isCookieObtained) {
+      res.status(401).json({
+        message:
+          "You are not logged in. Please login before accessing this route!",
+      });
+      return;
+    }
+
+    const token = cookie[0].split(";")[0].split("=")[1];
+
+    // validate the token obtained from cookie
+    const verifiedTokenOutput = verifyToken(token);
+    if (!verifiedTokenOutput.isValid) {
+      res.status(401).json({
+        message: verifiedTokenOutput.message,
+      });
+      return;
+    }
+
+    res.status(200).json({
+      data: verifiedTokenOutput.payload,
     });
   } catch (error) {
     console.error(error);

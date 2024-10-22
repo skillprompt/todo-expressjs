@@ -8,6 +8,7 @@ import {
 import { createDBConnection } from "./mongoose/db";
 import {
   loginController,
+  meController,
   signupController,
 } from "./controllers/auth-controller";
 
@@ -30,6 +31,9 @@ app.post("/auth/signup", signupController);
 
 // login flow
 app.post("/auth/login", loginController);
+
+// me route
+app.get("/auth/me", meController);
 
 app.get("/get-todo/:todoId", getTodoController); // done
 app.post("/create-todo", createTodoController); // done
