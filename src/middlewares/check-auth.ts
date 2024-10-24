@@ -6,9 +6,10 @@ export async function checkAuth(
   res: Response,
   next: NextFunction
 ) {
-  const cookie = req.headers["set-cookie"];
+  const cookie = req.headers["cookie"];
+  console.log("cookie", cookie);
 
-  const isCookieObtained = cookie && Array.isArray(cookie) && cookie.length > 0;
+  const isCookieObtained = cookie && cookie.length > 0;
 
   if (!isCookieObtained) {
     res.status(401).json({
@@ -18,7 +19,7 @@ export async function checkAuth(
     return;
   }
 
-  const token = cookie[0].split(";")[0].split("=")[1];
+  const token = cookie.split("=")[1];
 
   // validate the token obtained from cookie
   const verifiedTokenOutput = verifyToken(token);

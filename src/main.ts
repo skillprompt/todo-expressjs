@@ -13,6 +13,7 @@ import {
   signupController,
 } from "./controllers/auth-controller";
 import { checkAuth } from "./middlewares/check-auth";
+import cors from "cors";
 
 const PORT = 4000;
 
@@ -23,6 +24,13 @@ createDBConnection()
   });
 
 const app = express();
+
+app.use(
+  cors({
+    origin: ["http://localhost:5173"], // ACCESS-CONTROL-ALLOW-ORIGIN:http://localhost:5173
+    credentials: true, // Access-Control-Allow-Credentials: allow
+  })
+);
 
 app.use(express.json());
 app.use(cookieParser());
